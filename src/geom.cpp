@@ -1,33 +1,39 @@
 #include "geom.h"
 
-int Node::convolution(int width, int height, bool withTime) const {
+int Node::convolution(int width, int height, bool withTime) const 
+{
 	int res = withTime ? width * height * g : 0;
 	return res + i * width + j;
 }
 
-Point::Point() {
+Point::Point() 
+{
 	x = 0.0;
 	y = 0.0;
 }
 
 
-Point::Point(float x, float y) {
+Point::Point(float x, float y) 
+{
 	this->x = x;
 	this->y = y;
 }
 
 
-float Point::X() const {
+float Point::X() const 
+{
 	return x;
 }
 
 
-float Point::Y() const {
+float Point::Y() const 
+{
 	return y;
 }
 
 
-Point::Point(const Point &obj) {
+Point::Point(const Point &obj) 
+{
 	this->x = obj.x;
 	this->y = obj.y;
 }
@@ -45,18 +51,21 @@ Point::Point(const Point &obj) {
 //
 //}
 
-bool Vertex::IsConvex() const {
+bool Vertex::IsConvex() const 
+{
 	return convex;
 }
 
 
-void Vertex::SetConvex(bool cvx) {
+void Vertex::SetConvex(bool cvx) 
+{
 	convex = cvx;
 }
 
 using namespace Utils;
 
-float Utils::SqPointSegDistance(Point L1, Point L2, Point P) {
+float Utils::SqPointSegDistance(Point L1, Point L2, Point P) 
+{
 	auto v = L2 - L1;
 	auto w = P - L1;
 	float c1, c2;
@@ -73,8 +82,8 @@ float Utils::SqPointSegDistance(Point L1, Point L2, Point P) {
 }
 
 
-bool Utils::linearProgram1(const std::vector<Line> &lines, unsigned long curr, float radius, const Vector &optVelocity,
-						   bool directionOpt, Vector &result) {
+bool Utils::linearProgram1(const std::vector<Line> &lines, unsigned long curr, float radius, const Vector &optVelocity, bool directionOpt, Vector &result) 
+{
 	float dotProduct = lines[curr].liesOn.ScalarProduct(lines[curr].dir);
 	float discriminant = dotProduct * dotProduct + radius * radius - lines[curr].liesOn.SquaredEuclideanNorm();
 
@@ -87,8 +96,8 @@ bool Utils::linearProgram1(const std::vector<Line> &lines, unsigned long curr, f
 	float tLeft = -dotProduct - sqrtDiscriminant;
 	float tRight = -dotProduct + sqrtDiscriminant;
 
-	for (int i = 0; i < curr; ++i) {
-
+	for (int i = 0; i < curr; ++i) 
+	{
 		const float denominator = lines[curr].dir.Det(lines[i].dir);
 		const float numerator = lines[i].dir.Det(lines[curr].liesOn - lines[i].liesOn);
 
@@ -104,21 +113,25 @@ bool Utils::linearProgram1(const std::vector<Line> &lines, unsigned long curr, f
 
 		const float t = numerator / denominator;
 
-		if (denominator >= 0.0f) {
+		if (denominator >= 0.0f) 
+		{
 			/* Line i bounds line lineNo on the right. */
 			tRight = std::min(tRight, t);
 		}
-		else {
+		else 
+		{
 			/* Line i bounds line lineNo on the left. */
 			tLeft = std::max(tLeft, t);
 		}
 
-		if (tLeft > tRight) {
+		if (tLeft > tRight) 
+		{
 			return false;
 		}
 	}
 
-	if (directionOpt) {
+	if (directionOpt) 
+	{
 		/* Optimize direction. */
 		if (optVelocity.ScalarProduct(lines[curr].dir) > 0.0f) {
 			/* Take right extreme. */
@@ -129,7 +142,8 @@ bool Utils::linearProgram1(const std::vector<Line> &lines, unsigned long curr, f
 			result = lines[curr].liesOn + lines[curr].dir * tLeft;
 		}
 	}
-	else {
+	else 
+	{
 		/* Optimize closest point. */
 		const float t = lines[curr].dir.ScalarProduct(optVelocity - lines[curr].liesOn);
 
@@ -149,8 +163,8 @@ bool Utils::linearProgram1(const std::vector<Line> &lines, unsigned long curr, f
 
 
 unsigned long int
-Utils::linearProgram2(const std::vector<Line> &lines, float radius, const Vector &optVelocity, bool directionOpt,
-					  Vector &result) {
+Utils::linearProgram2(const std::vector<Line> &lines, float radius, const Vector &optVelocity, bool directionOpt, Vector &result) 
+{
 	if (directionOpt) {
 		result = optVelocity * radius;
 	}
@@ -177,8 +191,8 @@ Utils::linearProgram2(const std::vector<Line> &lines, float radius, const Vector
 }
 
 
-void Utils::linearProgram3(const std::vector<Line> &lines, size_t numObstLines, size_t beginLine, float radius,
-						   Vector &result) {
+void Utils::linearProgram3(const std::vector<Line> &lines, size_t numObstLines, size_t beginLine, float radius, Vector &result) 
+{
 	float distance = 0.0f;
 
 	for (size_t i = beginLine; i < lines.size(); ++i) {
@@ -225,9 +239,8 @@ void Utils::linearProgram3(const std::vector<Line> &lines, size_t numObstLines, 
 	}
 }
 
-bool Node::operator<(const Node &other) const {
+bool Node::operator<(const Node &other) const 
+{
 	return std::tuple<int, int, int, int>(F, -g, i, j) <
 		   std::tuple<int, int, int, int>(other.F, -other.g, other.i, other.j);
 }
-
-

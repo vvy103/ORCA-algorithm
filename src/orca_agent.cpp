@@ -5,7 +5,6 @@ orca_agent::orca_agent() : Agent()
 	fakeRadius = 0; 
 }
 
-
 orca_agent::orca_agent(const int &id, const Point &start, const Point &goal, const Map &map, const environment_options &options, AgentParam param) : Agent(id, start, goal, map, options, param) 
 { 
 	fakeRadius = param.rEps + param.radius; 
@@ -40,10 +39,8 @@ void orca_agent::ComputeNewVelocity()
 
 		for (int j = 0; j < ORCALines.size(); j++) 
 		{
-			if ((lRelativePosition * invTimeBoundaryObst - ORCALines[j].liesOn).Det(ORCALines[j].dir) -
-				invTimeBoundaryObst * fakeRadius >= -CN_EPS &&
-				(rRelativePosition * invTimeBoundaryObst - ORCALines[j].liesOn).Det(ORCALines[j].dir) -
-				invTimeBoundaryObst * fakeRadius >= -CN_EPS) {
+			if ((lRelativePosition * invTimeBoundaryObst - ORCALines[j].liesOn).Det(ORCALines[j].dir) - invTimeBoundaryObst * fakeRadius >= -CN_EPS && (rRelativePosition * invTimeBoundaryObst - ORCALines[j].liesOn).Det(ORCALines[j].dir) - invTimeBoundaryObst * fakeRadius >= -CN_EPS) 
+			{
 				alreadyCovered = true;
 				break;
 			}
@@ -61,26 +58,26 @@ void orca_agent::ComputeNewVelocity()
 		float s = -lRelativePosition.ScalarProduct(obstacleVector) / obstacleVector.SquaredEuclideanNorm();
 		float lineSqDist = (-lRelativePosition - obstacleVector * s).SquaredEuclideanNorm();
 
-		if ((s < 0.0f && lSqDist < sqTrueRadius) || (s > 1.0f && rSqDist < sqTrueRadius) ||
-			(s >= 0.0f && s < 1.0f && lineSqDist < sqTrueRadius)) {
+		if ((s < 0.0f && lSqDist < sqTrueRadius) || (s > 1.0f && rSqDist < sqTrueRadius) || (s >= 0.0f && s < 1.0f && lineSqDist < sqTrueRadius)) 
+		{
 			collisionsObst++;
 		}
 
 
-		if (s < 0.0f && lSqDist < sqFakeRadius) {
-
-			if (left->IsConvex()) {
+		if (s < 0.0f && lSqDist < sqFakeRadius) 
+		{
+			if (left->IsConvex()) 
+			{
 				line.liesOn = Point();
-				line.dir = Point(-lRelativePosition.Y(), lRelativePosition.X()) /
-						   sqrt(lSqDist); // Построение единичного вектора, нормального к относительному положению
+				line.dir = Point(-lRelativePosition.Y(), lRelativePosition.X()) / sqrt(lSqDist);
 				ORCALines.push_back(line);
 			}
-
 			continue;
 		}
-		else if (s > 1.0f && rSqDist < sqFakeRadius) {
-
-			if (right->IsConvex() && rRelativePosition.Det(NeighboursObst[i].second.next->dir) >= 0.0f) {
+		else if (s > 1.0f && rSqDist < sqFakeRadius) 
+		{
+			if (right->IsConvex() && rRelativePosition.Det(NeighboursObst[i].second.next->dir) >= 0.0f) 
+			{
 				line.liesOn = Point();
 				line.dir = Point(-rRelativePosition.Y(), rRelativePosition.X()) / sqrt(rSqDist);
 				ORCALines.push_back(line);
@@ -88,7 +85,8 @@ void orca_agent::ComputeNewVelocity()
 
 			continue;
 		}
-		else if (s >= 0.0f && s < 1.0f && lineSqDist < sqFakeRadius) {
+		else if (s >= 0.0f && s < 1.0f && lineSqDist < sqFakeRadius) 
+		{
 			line.liesOn = Point();
 			line.dir = -(NeighboursObst[i].second.dir);
 			ORCALines.push_back(line);
@@ -101,7 +99,8 @@ void orca_agent::ComputeNewVelocity()
 		if (s < 0.0f && lineSqDist <= sqFakeRadius) 
 		{
 
-			if (!left->IsConvex()) {
+			if (!left->IsConvex()) 
+			{
 				continue;
 			}
 
@@ -109,43 +108,42 @@ void orca_agent::ComputeNewVelocity()
 
 			float leg1 = sqrt(lSqDist - sqFakeRadius);
 
-			lLegDirection = Point(lRelativePosition.X() * leg1 - lRelativePosition.Y() * fakeRadius,
-								  lRelativePosition.X() * fakeRadius + lRelativePosition.Y() * leg1) / lSqDist;
-			rLegDirection = Point(lRelativePosition.X() * leg1 + lRelativePosition.Y() * fakeRadius,
-								  -lRelativePosition.X() * fakeRadius + lRelativePosition.Y() * leg1) / lSqDist;
+			lLegDirection = Point(lRelativePosition.X() * leg1 - lRelativePosition.Y() * fakeRadius, lRelativePosition.X() * fakeRadius + lRelativePosition.Y() * leg1) / lSqDist;
+			rLegDirection = Point(lRelativePosition.X() * leg1 + lRelativePosition.Y() * fakeRadius, -lRelativePosition.X() * fakeRadius + lRelativePosition.Y() * leg1) / lSqDist;
 		}
 		else if (s > 1.0f && lineSqDist <= sqFakeRadius) 
 		{
 
-			if (!right->IsConvex()) {
+			if (!right->IsConvex()) 
+			{
 				continue;
 			}
 
 			left = right;
 
 			float leg2 = std::sqrt(rSqDist - sqFakeRadius);
-			lLegDirection = Point(rRelativePosition.X() * leg2 - rRelativePosition.Y() * fakeRadius,
-								  rRelativePosition.X() * fakeRadius + rRelativePosition.Y() * leg2) / rSqDist;
-			rLegDirection = Point(rRelativePosition.X() * leg2 + rRelativePosition.Y() * fakeRadius,
-								  -rRelativePosition.X() * fakeRadius + rRelativePosition.Y() * leg2) / rSqDist;
+			lLegDirection = Point(rRelativePosition.X() * leg2 - rRelativePosition.Y() * fakeRadius, rRelativePosition.X() * fakeRadius + rRelativePosition.Y() * leg2) / rSqDist;
+			rLegDirection = Point(rRelativePosition.X() * leg2 + rRelativePosition.Y() * fakeRadius, -rRelativePosition.X() * fakeRadius + rRelativePosition.Y() * leg2) / rSqDist;
 		}
 		else 
 		{
-			if (left->IsConvex()) {
+			if (left->IsConvex()) 
+			{
 				float leg1 = std::sqrt(lSqDist - sqFakeRadius);
-				lLegDirection = Point(lRelativePosition.X() * leg1 - lRelativePosition.Y() * fakeRadius,
-									  lRelativePosition.X() * fakeRadius + lRelativePosition.Y() * leg1) / lSqDist;
+				lLegDirection = Point(lRelativePosition.X() * leg1 - lRelativePosition.Y() * fakeRadius, lRelativePosition.X() * fakeRadius + lRelativePosition.Y() * leg1) / lSqDist;
 			}
-			else {
+			else 
+			{
 				lLegDirection = -NeighboursObst[i].second.dir;
 			}
 
-			if (right->IsConvex()) {
+			if (right->IsConvex()) 
+			{
 				float leg2 = std::sqrt(rSqDist - sqFakeRadius);
-				rLegDirection = Point(rRelativePosition.X() * leg2 + rRelativePosition.Y() * fakeRadius,
-									  -rRelativePosition.X() * fakeRadius + rRelativePosition.Y() * leg2) / rSqDist;
+				rLegDirection = Point(rRelativePosition.X() * leg2 + rRelativePosition.Y() * fakeRadius, -rRelativePosition.X() * fakeRadius + rRelativePosition.Y() * leg2) / rSqDist;
 			}
-			else {
+			else 
+			{
 				rLegDirection = NeighboursObst[i].second.dir;
 			}
 		}
@@ -154,12 +152,14 @@ void orca_agent::ComputeNewVelocity()
 
 		bool isLLegForeign = false, isRLegForeign = false;
 
-		if (left->IsConvex() && lLegDirection.Det(-leftNeighbor->dir) >= 0.0f) {
+		if (left->IsConvex() && lLegDirection.Det(-leftNeighbor->dir) >= 0.0f) 
+		{
 			lLegDirection = -leftNeighbor->dir;
 			isLLegForeign = true;
 		}
 
-		if (right->IsConvex() && rLegDirection.Det(NeighboursObst[i].second.next->dir) <= 0.0f) {
+		if (right->IsConvex() && rLegDirection.Det(NeighboursObst[i].second.next->dir) <= 0.0f) 
+		{
 			rLegDirection = NeighboursObst[i].second.next->dir;
 			isRLegForeign = true;
 		}
@@ -168,12 +168,12 @@ void orca_agent::ComputeNewVelocity()
 		Point rightCutoff = (*right - position) * invTimeBoundaryObst;
 		Vector cutoffVec = rightCutoff - leftCutoff;
 
-		const float t = (right == left ? 0.5f : ((currV - leftCutoff).ScalarProduct(cutoffVec)) /
-												cutoffVec.SquaredEuclideanNorm());
+		const float t = (right == left ? 0.5f : ((currV - leftCutoff).ScalarProduct(cutoffVec)) / cutoffVec.SquaredEuclideanNorm());
 		const float tLeft = ((currV - leftCutoff).ScalarProduct(lLegDirection));
 		const float tRight = ((currV - rightCutoff).ScalarProduct(rLegDirection));
 
-		if ((t < 0.0f && tLeft < 0.0f) || (left == right && tLeft < 0.0f && tRight < 0.0f)) {
+		if ((t < 0.0f && tLeft < 0.0f) || (left == right && tLeft < 0.0f && tRight < 0.0f)) 
+		{
 			Vector unitW = (currV - leftCutoff) / (currV - leftCutoff).EuclideanNorm();
 
 			line.dir = Vector(unitW.Y(), -unitW.X());
@@ -181,7 +181,8 @@ void orca_agent::ComputeNewVelocity()
 			ORCALines.push_back(line);
 			continue;
 		}
-		else if (t > 1.0f && tRight < 0.0f) {
+		else if (t > 1.0f && tRight < 0.0f) 
+		{
 			Vector unitW = (currV - rightCutoff) / (currV - rightCutoff).EuclideanNorm();
 
 			line.dir = Vector(unitW.Y(), -unitW.X());
@@ -199,14 +200,17 @@ void orca_agent::ComputeNewVelocity()
 																								 rLegDirection *
 																								 tRight)).SquaredEuclideanNorm());
 
-		if (cutoffSqDist <= lLegSqDist && cutoffSqDist <= rLegSqDist) {
+		if (cutoffSqDist <= lLegSqDist && cutoffSqDist <= rLegSqDist) 
+		{
 			line.dir = -NeighboursObst[i].second.dir;
 			line.liesOn = leftCutoff + Point(-line.dir.Y(), line.dir.X()) * fakeRadius * invTimeBoundaryObst;
 			ORCALines.push_back(line);
 			continue;
 		}
-		else if (lLegSqDist <= rLegSqDist) {
-			if (isLLegForeign) {
+		else if (lLegSqDist <= rLegSqDist) 
+		{
+			if (isLLegForeign) 
+			{
 				continue;
 			}
 
@@ -215,8 +219,10 @@ void orca_agent::ComputeNewVelocity()
 			ORCALines.push_back(line);
 			continue;
 		}
-		else {
-			if (isRLegForeign) {
+		else 
+		{
+			if (isRLegForeign) 
+			{
 				continue;
 			}
 
@@ -236,7 +242,8 @@ void orca_agent::ComputeNewVelocity()
 
 	unsigned long minMaxNum = (param.agentsMaxNum < Neighbours.size()) ? param.agentsMaxNum : Neighbours.size();
 
-	for (unsigned long i = 0; i < minMaxNum; i++) {
+	for (unsigned long i = 0; i < minMaxNum; i++) 
+	{
 		auto Neighbour = Neighbours[i];
 		curragent = dynamic_cast<orca_agent *>(Neighbour.second);
 		auto circlecenter = curragent->position - this->position; //(P_b - P_a)
@@ -247,11 +254,13 @@ void orca_agent::ComputeNewVelocity()
 		float distSq = circlecenter.SquaredEuclideanNorm();
 		float trueSqRadSum = (param.radius + curragent->param.radius) * (param.radius + curragent->param.radius);
 
-		if (distSq < trueSqRadSum) {
+		if (distSq < trueSqRadSum) 
+		{
 			collisions++;
 		}
 
-		if (distSq >= radiussum2) {
+		if (distSq >= radiussum2) 
+		{
 			w = relvelocity - (circlecenter * invTimeBoundary);
 			float sqwlength = w.SquaredEuclideanNorm();
 			float wproj = w.ScalarProduct(circlecenter);
@@ -264,15 +273,14 @@ void orca_agent::ComputeNewVelocity()
 				u = nw * (radiussum * invTimeBoundary - wlength);
 			}
 			else {
-
 				float leg = std::sqrt(distSq - radiussum2);
 
-				if (circlecenter.Det(w) > 0.0f) //если точка ближе к левой стороне VO
+				if (circlecenter.Det(w) > 0.0f) 
 				{
 					currline.dir = Vector(circlecenter.X() * leg - circlecenter.Y() * radiussum,
 										  circlecenter.X() * radiussum + circlecenter.Y() * leg) / distSq;
 				}
-				else //если точка ближе к правой стороне VO
+				else
 				{
 					currline.dir = -(Vector(circlecenter.X() * leg + circlecenter.Y() * radiussum,
 											-circlecenter.X() * radiussum + circlecenter.Y() * leg) / distSq);
@@ -316,9 +324,11 @@ void orca_agent::ApplyNewVelocity()
 bool orca_agent::UpdatePrefVelocity() 
 {
 	Point next;
-	if (planner->GetNext(position, next)) {
+	if (planner->GetNext(position, next)) 
+	{
 		Vector goalVector = next - position;
 		float dist = goalVector.EuclideanNorm();
+
 		if (next == goal && dist < options->delta) {
 			prefV = Point();
 			return true;

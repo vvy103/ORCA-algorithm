@@ -10,7 +10,8 @@
 #define ORCA_GEOM_H
 
 
-class Node {
+class Node 
+{
 	public:
 		int i, j;
 		double F, g, H;
@@ -49,7 +50,8 @@ struct NodePairHash {
 };
 
 
-class Point {
+class Point 
+{
 	public:
 		Point();
 
@@ -99,7 +101,8 @@ class Point {
 };
 
 
-class Line {
+class Line 
+{
 	public:
 		Vector dir;
 		Point liesOn;
