@@ -1,7 +1,8 @@
 #include "agent.h"
 
 
-Agent::Agent() {
+Agent::Agent() 
+{
 	id = -1;
 	start = Point();
 	goal = Point();
@@ -25,9 +26,8 @@ Agent::Agent() {
 	meanSavedSpeed = 1.0f;
 }
 
-
-Agent::Agent(const int &id, const Point &start, const Point &goal, const Map &map, const environment_options &options,
-			 AgentParam param) {
+Agent::Agent(const int &id, const Point &start, const Point &goal, const Map &map, const environment_options &options, AgentParam param) 
+{
 	this->id = id;
 	this->start = start;
 	this->goal = goal;
@@ -54,11 +54,10 @@ Agent::Agent(const int &id, const Point &start, const Point &goal, const Map &ma
 	// maxSqObstDist = std::pow((param.maxSpeed * param.timeBoundaryObst + param.radius), 2.0f);
 	speedSaveBuffer = std::list<float>(SPEED_BUFF_SIZE, param.maxSpeed);
 	meanSavedSpeed = 1.0f;
-
 }
 
-
-Agent::Agent(const Agent &obj) {
+Agent::Agent(const Agent &obj) 
+{
 	this->id = obj.id;
 	this->start = obj.start;
 	this->goal = obj.goal;
@@ -86,8 +85,8 @@ Agent::Agent(const Agent &obj) {
 	meanSavedSpeed = obj.meanSavedSpeed;
 }
 
-
-Agent::~Agent() {
+Agent::~Agent() 
+{
 	if (planner != nullptr) {
 		delete planner;
 		planner = nullptr;
@@ -98,22 +97,26 @@ Agent::~Agent() {
 }
 
 
-bool Agent::isFinished() {
+bool Agent::isFinished() 
+{
 	return ((this->position - this->goal).EuclideanNorm() < options->delta);
 }
 
 
-bool Agent::operator==(const Agent &another) const {
+bool Agent::operator==(const Agent &another) const 
+{
 	return this->id == another.id;
 }
 
 
-bool Agent::operator!=(const Agent &another) const {
+bool Agent::operator!=(const Agent &another) const 
+{
 	return this->id != another.id;
 }
 
 
-void Agent::AddNeighbour(Agent &neighbour, float distSq) {
+void Agent::AddNeighbour(Agent &neighbour, float distSq) 
+{
 	float sightSq = param.sightRadius * param.sightRadius;
 
 	if (distSq >= sightSq) {
@@ -128,21 +131,23 @@ void Agent::AddNeighbour(Agent &neighbour, float distSq) {
 	if (i < param.agentsMaxNum) {
 		Neighbours.insert(tmpit, std::pair<float, Agent *>(distSq, &neighbour));
 	}
-
 }
 
 
-void Agent::SetPosition(const Point &pos) {
+void Agent::SetPosition(const Point &pos) 
+{
 	position = pos;
 }
 
 
-Point Agent::GetPosition() const {
+Point Agent::GetPosition() const 
+{
 	return position;
 }
 
 
-void Agent::UpdateNeighbourObst() {
+void Agent::UpdateNeighbourObst() 
+{
 	NeighboursObst.clear();
 	std::vector<std::vector<ObstacleSegment>> tmpObstacles = map->GetObstacles();
 	float distSq = 0;
@@ -162,33 +167,38 @@ void Agent::UpdateNeighbourObst() {
 }
 
 
-Point Agent::GetVelocity() const {
+Point Agent::GetVelocity() const 
+{
 	return currV;
 }
 
 
-std::pair<unsigned int, unsigned int> Agent::GetCollision() const {
+std::pair<unsigned int, unsigned int> Agent::GetCollision() const 
+{
 	return {collisions, collisionsObst};
 }
 
 
-bool Agent::InitPath() {
+bool Agent::InitPath() 
+{
 	return planner->CreateGlobalPath();
 }
 
 
-int Agent::GetID() const {
+int Agent::GetID() const 
+{
 	return id;
 }
 
 
-float Agent::GetRadius() const {
+float Agent::GetRadius() const 
+{
 	return param.radius;
 }
 
 
-Agent &Agent::operator=(const Agent &obj) {
-
+Agent &Agent::operator=(const Agent &obj) 
+{
 	if (this != &obj) {
 		start = obj.start;
 		goal = obj.goal;
@@ -220,12 +230,14 @@ Agent &Agent::operator=(const Agent &obj) {
 }
 
 
-Point Agent::GetNext() const {
+Point Agent::GetNext() const
+{
 	return nextForLog;
 }
 
 
-bool Agent::CommonPointMAPFTrigger(float distToTargetPoint) {
+bool Agent::CommonPointMAPFTrigger(float distToTargetPoint) 
+{
 	return (Neighbours.size() >= options->MAPFNum) && (distToTargetPoint < param.sightRadius);
 }
 
@@ -246,7 +258,8 @@ bool Agent::CommonPointMAPFTrigger(float distToTargetPoint) {
 //}
 
 
-bool Agent::NeighbourGroupMeanSpeedMAPFTrigger() {
+bool Agent::NeighbourGroupMeanSpeedMAPFTrigger() 
+{
 	size_t nNum = (options->MAPFNum > Neighbours.size()) ? Neighbours.size() : options->MAPFNum;
 	if (!nNum) return false;
 
@@ -267,7 +280,8 @@ bool Agent::NeighbourGroupMeanSpeedMAPFTrigger() {
 }
 
 
-bool Agent::SingleNeighbourMeanSpeedMAPFTrigger() {
+bool Agent::SingleNeighbourMeanSpeedMAPFTrigger() 
+{
 	if (!Neighbours.size()) return false;
 
 	if (this->meanSavedSpeed < SMALL_SPEED) {

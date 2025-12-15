@@ -10,12 +10,9 @@
 
 class PathPlanner {
 	public:
-		PathPlanner(const PathPlanner &obj) : map(obj.map), options(obj.options), glStart(obj.glStart),
-											  glGoal(obj.glGoal), radius(obj.radius) {}
+		PathPlanner(const PathPlanner &obj) : map(obj.map), options(obj.options), glStart(obj.glStart), glGoal(obj.glGoal), radius(obj.radius) {}
 
-		PathPlanner(const Map &map, const environment_options &options, const Point &start, const Point &goal,
-					const float &radius)
-				: map(&map), options(&options), glStart(start), glGoal(goal), radius(radius) {};
+		PathPlanner(const Map &map, const environment_options &options, const Point &start, const Point &goal, const float &radius) : map(&map), options(&options), glStart(start), glGoal(goal), radius(radius) {};
 
 		virtual ~PathPlanner() {
 			map = nullptr;
@@ -34,7 +31,8 @@ class PathPlanner {
 
 		virtual Point GetPastPoint() = 0;
 
-		PathPlanner &operator=(const PathPlanner &obj) {
+		PathPlanner &operator=(const PathPlanner &obj) 
+		{
 			map = obj.map;
 			options = obj.options;
 			glStart = obj.glStart;

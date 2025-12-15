@@ -47,6 +47,10 @@ class Mission {
 
 		bool IsFinished();
 
+		void SavePathToTxt(std::string fileName);
+
+		void SaveMapToDotMap(std::string fileName);
+
 		vector<Agent *> agents;
 		Reader *taskReader;
 		Map *map;

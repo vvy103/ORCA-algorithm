@@ -15,16 +15,12 @@
 #define ORCA_AGENT_H
 
 
-class AgentParam {
+class AgentParam 
+{
 	public:
-		AgentParam() : sightRadius(CN_DEFAULT_RADIUS_OF_SIGHT), timeBoundary(CN_DEFAULT_TIME_BOUNDARY),
-					   timeBoundaryObst(CN_DEFAULT_OBS_TIME_BOUNDARY),
-					   radius(CN_DEFAULT_SIZE), maxSpeed(CN_DEFAULT_MAX_SPEED), agentsMaxNum(CN_DEFAULT_AGENTS_MAX_NUM),
-					   rEps(CN_DEFAULT_REPS) {}
+		AgentParam() : sightRadius(CN_DEFAULT_RADIUS_OF_SIGHT), timeBoundary(CN_DEFAULT_TIME_BOUNDARY), timeBoundaryObst(CN_DEFAULT_OBS_TIME_BOUNDARY), radius(CN_DEFAULT_SIZE), maxSpeed(CN_DEFAULT_MAX_SPEED), agentsMaxNum(CN_DEFAULT_AGENTS_MAX_NUM), rEps(CN_DEFAULT_REPS) {}
 
-		AgentParam(float sr, float tb, float tbo, float r, float reps, float ms, int amn, int parNum, MAPFTriggers trig)
-				: sightRadius(sr), timeBoundary(tb), timeBoundaryObst(tbo), radius(r), rEps(reps),
-				  maxSpeed(ms), agentsMaxNum(amn) {}
+		AgentParam(float sr, float tb, float tbo, float r, float reps, float ms, int amn, int parNum, MAPFTriggers trig) : sightRadius(sr), timeBoundary(tb), timeBoundaryObst(tbo), radius(r), rEps(reps), maxSpeed(ms), agentsMaxNum(amn) {}
 
 		~AgentParam() = default;
 
@@ -37,12 +33,12 @@ class AgentParam {
 		int agentsMaxNum;
 };
 
-class Agent {
+class Agent 
+{
 	public:
 		Agent();
 
-		Agent(const int &id, const Point &start, const Point &goal, const Map &map, const environment_options &options,
-			  AgentParam param);
+		Agent(const int &id, const Point &start, const Point &goal, const Map &map, const environment_options &options, AgentParam param);
 
 		Agent(const Agent &obj);
 
@@ -87,7 +83,8 @@ class Agent {
 		Agent &operator=(const Agent &obj);
 
 		template<class Planner>
-		void SetPlanner(const Planner &pl) {
+		void SetPlanner(const Planner &pl) 
+		{
 			static_assert(std::is_base_of<PathPlanner, Planner>::value, "Planner should be inheritor of PathPlanner");
 			this->planner = new Planner(pl);
 		}

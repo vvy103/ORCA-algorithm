@@ -1,24 +1,32 @@
 #include "orca_agent.h"
 
-orca_agent::orca_agent() : Agent() { fakeRadius = 0; }
+orca_agent::orca_agent() : Agent() 
+{ 
+	fakeRadius = 0; 
+}
 
 
-orca_agent::orca_agent(const int &id, const Point &start, const Point &goal, const Map &map,
-					   const environment_options &options, AgentParam param)
-		: Agent(id, start, goal, map, options, param) { fakeRadius = param.rEps + param.radius; }
+orca_agent::orca_agent(const int &id, const Point &start, const Point &goal, const Map &map, const environment_options &options, AgentParam param) : Agent(id, start, goal, map, options, param) 
+{ 
+	fakeRadius = param.rEps + param.radius; 
+}
 
 
-orca_agent::orca_agent(const orca_agent &obj) : Agent(obj) { fakeRadius = obj.fakeRadius; }
+orca_agent::orca_agent(const orca_agent &obj) : Agent(obj) 
+{ 
+	fakeRadius = obj.fakeRadius; 
+}
 
 
 orca_agent::~orca_agent() = default;
 
 
-void orca_agent::ComputeNewVelocity() {
+void orca_agent::ComputeNewVelocity() 
+{
 	ORCALines.clear();
 
-	// Получение ORCA-линий препятсвий
-	for (int i = 0; i < NeighboursObst.size(); i++) {
+	for (int i = 0; i < NeighboursObst.size(); i++) 
+	{
 		Line line;
 
 		Vertex *left = &(NeighboursObst[i].second.left);
@@ -30,7 +38,8 @@ void orca_agent::ComputeNewVelocity() {
 
 		bool alreadyCovered = false;
 
-		for (int j = 0; j < ORCALines.size(); j++) {
+		for (int j = 0; j < ORCALines.size(); j++) 
+		{
 			if ((lRelativePosition * invTimeBoundaryObst - ORCALines[j].liesOn).Det(ORCALines[j].dir) -
 				invTimeBoundaryObst * fakeRadius >= -CN_EPS &&
 				(rRelativePosition * invTimeBoundaryObst - ORCALines[j].liesOn).Det(ORCALines[j].dir) -
@@ -89,7 +98,8 @@ void orca_agent::ComputeNewVelocity() {
 
 		Vector lLegDirection, rLegDirection;
 
-		if (s < 0.0f && lineSqDist <= sqFakeRadius) {
+		if (s < 0.0f && lineSqDist <= sqFakeRadius) 
+		{
 
 			if (!left->IsConvex()) {
 				continue;
@@ -104,7 +114,8 @@ void orca_agent::ComputeNewVelocity() {
 			rLegDirection = Point(lRelativePosition.X() * leg1 + lRelativePosition.Y() * fakeRadius,
 								  -lRelativePosition.X() * fakeRadius + lRelativePosition.Y() * leg1) / lSqDist;
 		}
-		else if (s > 1.0f && lineSqDist <= sqFakeRadius) {
+		else if (s > 1.0f && lineSqDist <= sqFakeRadius) 
+		{
 
 			if (!right->IsConvex()) {
 				continue;
@@ -118,7 +129,8 @@ void orca_agent::ComputeNewVelocity() {
 			rLegDirection = Point(rRelativePosition.X() * leg2 + rRelativePosition.Y() * fakeRadius,
 								  -rRelativePosition.X() * fakeRadius + rRelativePosition.Y() * leg2) / rSqDist;
 		}
-		else {
+		else 
+		{
 			if (left->IsConvex()) {
 				float leg1 = std::sqrt(lSqDist - sqFakeRadius);
 				lLegDirection = Point(lRelativePosition.X() * leg1 - lRelativePosition.Y() * fakeRadius,
@@ -218,9 +230,6 @@ void orca_agent::ComputeNewVelocity() {
 
 	size_t numObstLines = ORCALines.size();
 
-	//Получение ORCA-линий агентов
-	//std::sort(Neighbours.begin(),Neighbours.end(), Compare);
-
 	Line currline;
 	orca_agent *curragent;
 	Vector u, w;
@@ -243,13 +252,10 @@ void orca_agent::ComputeNewVelocity() {
 		}
 
 		if (distSq >= radiussum2) {
-			w = relvelocity - (circlecenter *
-							   invTimeBoundary); //w -- вектор на плоскости скоростей от центра малой окружности (основания VO) до скорости другого агента относительно этого
+			w = relvelocity - (circlecenter * invTimeBoundary);
 			float sqwlength = w.SquaredEuclideanNorm();
 			float wproj = w.ScalarProduct(circlecenter);
 
-			// если эти условия выполняются, то вектор w отложенный из центра окружности-основания VO будет своим концом ближе к
-			// этой самой окружности, а значит и ближайшая точка на границе VO -- это какая-то точка на этой окружнрости
 
 			if (wproj < 0.0f && (wproj * wproj) > sqwlength * radiussum2) {
 				const float wlength = std::sqrt(sqwlength);
@@ -258,8 +264,6 @@ void orca_agent::ComputeNewVelocity() {
 				u = nw * (radiussum * invTimeBoundary - wlength);
 			}
 			else {
-				//иначе проекция на стороны VO
-				//длина проекции вектора относительных положений на сторону VO
 
 				float leg = std::sqrt(distSq - radiussum2);
 
@@ -303,12 +307,14 @@ void orca_agent::ComputeNewVelocity() {
 }
 
 
-void orca_agent::ApplyNewVelocity() {
+void orca_agent::ApplyNewVelocity() 
+{
 	currV = newV;
 }
 
 
-bool orca_agent::UpdatePrefVelocity() {
+bool orca_agent::UpdatePrefVelocity() 
+{
 	Point next;
 	if (planner->GetNext(position, next)) {
 		Vector goalVector = next - position;
@@ -331,7 +337,8 @@ bool orca_agent::UpdatePrefVelocity() {
 	return false;
 }
 
-orca_agent &orca_agent::operator=(const orca_agent &obj) {
+orca_agent &orca_agent::operator=(const orca_agent &obj) 
+{
 
 	if (this != &obj) {
 		Agent::operator=(obj);
@@ -340,14 +347,17 @@ orca_agent &orca_agent::operator=(const orca_agent &obj) {
 	return *this;
 }
 
-bool orca_agent::operator==(const orca_agent &another) const {
+bool orca_agent::operator==(const orca_agent &another) const 
+{
 	return this->id == another.id;
 }
 
-bool orca_agent::operator!=(const orca_agent &another) const {
+bool orca_agent::operator!=(const orca_agent &another) const 
+{
 	return this->id != another.id;
 }
 
-orca_agent *orca_agent::Clone() const {
+orca_agent *orca_agent::Clone() const 
+{
 	return new orca_agent(*this);
 }

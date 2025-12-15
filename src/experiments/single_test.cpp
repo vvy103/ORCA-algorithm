@@ -12,7 +12,8 @@
 #define TIME_MAX            1000 * 60 * 1
 
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) 
+{
 
 	if (argc != 3) {
 		std::cout << "Error! Invalid number of arguments.\n";
@@ -35,30 +36,38 @@ int main(int argc, char *argv[]) {
 
 
 	Mission task = Mission(taskfile, num, STEP_MAX, IS_TIME_BOUNDED, TIME_MAX, STOP_BY_SPEED);
-	if (task.ReadTask()) {
+	if (task.ReadTask()) 
+	{
 		auto summary = task.StartMission();
 		auto full_summary = summary.getFullSummary();
+
 		std::vector<std::string> keys, values;
-		for(auto it = full_summary.begin(); it != full_summary.end(); ++it) {
+
+		for(auto it = full_summary.begin(); it != full_summary.end(); ++it) 
+		{
 			keys.push_back(it->first);
 			values.push_back(it->second);
 		}
 
-		for (auto &key : keys) {
+		for (auto &key : keys) 
+		{
 			std::cout << std::right << std::setfill(' ') << std::setw(15) << key  << ' ';
 		}
 		std::cout << std::endl;
-		for (auto &value : values) {
+		
+		for (auto &value : values) 
+		{
 			std::cout << std::right << std::setfill(' ') << std::setw(15) << value  << ' ';
 		}
 		std::cout << std::endl;
 
-#if FULL_LOG
-		task.SaveLog();
-#endif
+		#if FULL_LOG
+			task.SaveLog();
+		#endif
 
 	}
-	else {
+	else
+	{
 		std::cout << "Error during task execution\n";
 		return -1;
 	}

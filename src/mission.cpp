@@ -1,9 +1,9 @@
 #include "mission.h"
 #include <fstream>
-#include <algorithm> // for std::max
+#include <algorithm>
 
-Mission::Mission(std::string fileName, unsigned int agentsNum, unsigned int stepsTh, bool time, size_t timeTh,
-                 bool speedStop) {
+Mission::Mission(std::string fileName, unsigned int agentsNum, unsigned int stepsTh, bool time, size_t timeTh, bool speedStop) 
+{
     taskReader = new XMLReader(fileName);
     agents = vector<Agent *>();
     this->agentsNum = agentsNum;
@@ -17,27 +17,27 @@ Mission::Mission(std::string fileName, unsigned int agentsNum, unsigned int step
     resultsLog = std::unordered_map<int, std::pair<bool, int>>();
     resultsLog.reserve(agentsNum);
 
-#if FULL_LOG
-    taskLogger = new XMLLogger(XMLLogger::GenerateLogFileName(fileName, agentsNum), fileName);
-    stepsLog = std::unordered_map<int, std::vector<Point>>();
-    stepsLog.reserve(agentsNum);
+    #if FULL_LOG
+        taskLogger = new XMLLogger(XMLLogger::GenerateLogFileName(fileName, agentsNum), fileName);
+        stepsLog = std::unordered_map<int, std::vector<Point>>();
+        stepsLog.reserve(agentsNum);
 
-    goalsLog = std::unordered_map<int, std::vector<Point>>();
-    goalsLog.reserve(agentsNum);
-#endif
+        goalsLog = std::unordered_map<int, std::vector<Point>>();
+        goalsLog.reserve(agentsNum);
+    #endif
 
     collisionsCount = 0;
     collisionsObstCount = 0;
     stepsCount = 0;
 
-#if MAPF_LOG
-    auto found = fileName.find_last_of(".");
-    string tmpPAR = fileName.erase(found);
-    std::string piece = "_" + std::to_string(agentsNum);
-    tmpPAR.insert(found, piece);
+    #if MAPF_LOG
+        auto found = fileName.find_last_of(".");
+        string tmpPAR = fileName.erase(found);
+        std::string piece = "_" + std::to_string(agentsNum);
+        tmpPAR.insert(found, piece);
 
-    MAPFLog = MAPFInstancesLogger(tmpPAR);
-#endif
+        MAPFLog = MAPFInstancesLogger(tmpPAR);
+    #endif
 
     commonSpeedsBuffer = std::vector<std::list<float>>(agentsNum, std::list<float>(COMMON_SPEED_BUFF_SIZE, 1.0));
     allStops = false;
@@ -45,10 +45,12 @@ Mission::Mission(std::string fileName, unsigned int agentsNum, unsigned int step
 }
 
 
-Mission::Mission(const Mission &obj) {
-#if MAPF_LOG
-    MAPFLog = obj.MAPFLog;
-#endif
+Mission::Mission(const Mission &obj) 
+{
+    #if MAPF_LOG
+        MAPFLog = obj.MAPFLog;
+    #endif
+    
     agents = obj.agents;
     map = obj.map;
     options = obj.options;
@@ -59,18 +61,19 @@ Mission::Mission(const Mission &obj) {
     stepsCount = obj.stepsCount;
     taskReader = (obj.taskReader == nullptr) ? nullptr : obj.taskReader->Clone();
 
-#if FULL_LOG
-    taskLogger = (obj.taskLogger == nullptr) ? nullptr : obj.taskLogger->Clone();
-    stepsLog = obj.stepsLog;
-    goalsLog = obj.goalsLog;
-#endif
+    #if FULL_LOG
+        taskLogger = (obj.taskLogger == nullptr) ? nullptr : obj.taskLogger->Clone();
+        stepsLog = obj.stepsLog;
+        goalsLog = obj.goalsLog;
+    #endif
     commonSpeedsBuffer = obj.commonSpeedsBuffer;
     allStops = obj.allStops;
     stopByMeanSpeed = obj.stopByMeanSpeed;
 }
 
 
-Mission::~Mission() {
+Mission::~Mission() 
+{
     for (auto &agent: agents) {
         if (agent != nullptr) {
             delete agent;
@@ -93,49 +96,51 @@ Mission::~Mission() {
         taskReader = nullptr;
     }
 
-#if FULL_LOG
-    if (taskLogger != nullptr) {
-        delete taskLogger;
-        taskLogger = nullptr;
-    }
-#endif
+    #if FULL_LOG
+        if (taskLogger != nullptr) {
+            delete taskLogger;
+            taskLogger = nullptr;
+        }
+    #endif
 }
 
 
-bool Mission::ReadTask() {
-    return taskReader->ReadData() && taskReader->GetMap(&map) && taskReader->GetAgents(agents, this->agentsNum) &&
-           taskReader->GetEnvironmentOptions(&options);
+bool Mission::ReadTask() 
+{
+    return taskReader->ReadData() && taskReader->GetMap(&map) && taskReader->GetAgents(agents, this->agentsNum) && taskReader->GetEnvironmentOptions(&options);
 }
 
 
-Summary Mission::StartMission() {
-    // 保存地图用于可视化
+Summary Mission::StartMission() 
+{
     SaveMapToDotMap("my_map.map");
 
-#if FULL_OUTPUT
-    std::cout << "Start\n";
-#endif
+    #if FULL_OUTPUT
+        std::cout << "Start\n";
+    #endif
 
     auto startpnt = std::chrono::high_resolution_clock::now();
-    for (auto agent: agents) {
-#if MAPF_LOG
-        if (dynamic_cast<ORCAAgentWithPARAndECBS*>(agent) != nullptr) {
-            dynamic_cast<ORCAAgentWithPARAndECBS *>(agent)->SetMAPFInstanceLoggerRef(&MAPFLog);
-        }
-#endif
+    for (auto agent: agents) 
+    {
+        #if MAPF_LOG
+            if (dynamic_cast<ORCAAgentWithPARAndECBS*>(agent) != nullptr) {
+                dynamic_cast<ORCAAgentWithPARAndECBS *>(agent)->SetMAPFInstanceLoggerRef(&MAPFLog);
+            }
+        #endif
+
         bool found = agent->InitPath();
-#if FULL_OUTPUT
-        if (!found) {
-            std::cout << agent->GetID() << " " << "Path not found\n";
-        }
-#endif
+        #if FULL_OUTPUT
+            if (!found) {
+                std::cout << agent->GetID() << " " << "Path not found\n";
+            }
+        #endif
         resultsLog.insert({agent->GetID(), {false, 0}});
 
-#if FULL_LOG
-        stepsLog.insert({agent->GetID(), std::vector<Point>()});
-        stepsLog[agent->GetID()].push_back({agent->GetPosition()});
-        goalsLog[agent->GetID()].push_back(agent->GetPosition());
-#endif
+        #if FULL_LOG
+            stepsLog.insert({agent->GetID(), std::vector<Point>()});
+            stepsLog[agent->GetID()].push_back({agent->GetPosition()});
+            goalsLog[agent->GetID()].push_back(agent->GetPosition());
+        #endif
 
     }
     bool needToStop, needToStopByTime, needToStopBySteps, needToStopBySpeed;
@@ -232,16 +237,16 @@ Summary Mission::StartMission() {
     // 保存路径用于可视化
     SavePathToTxt("paths.txt");
 
-#if FULL_OUTPUT
-    std::cout << "End\n";
-#endif
+    #if FULL_OUTPUT
+        std::cout << "End\n";
+    #endif
     return missionResult;
 }
 
 
 #if FULL_LOG
-// 标准 XML 日志保存函数
-bool Mission::SaveLog() {
+bool Mission::SaveLog() 
+{
     taskLogger->SetResults(stepsLog, goalsLog, resultsLog);
     taskLogger->SetSummary(missionResult);
     return taskLogger->GenerateLog() && (stepsCount > 0);
@@ -249,7 +254,8 @@ bool Mission::SaveLog() {
 #endif
 
 
-void Mission::UpdateSate() {
+void Mission::UpdateSate() 
+{
     size_t i = 0;
     allStops = true;
 
@@ -276,10 +282,10 @@ void Mission::UpdateSate() {
             allStops = false;
         }
 
-#if FULL_LOG
-        stepsLog[agent->GetID()].push_back(newPos);
-        goalsLog[agent->GetID()].push_back(agent->GetNext());
-#endif
+        #if FULL_LOG
+            stepsLog[agent->GetID()].push_back(newPos);
+            goalsLog[agent->GetID()].push_back(agent->GetNext());
+        #endif
         i++;
     }
 
@@ -287,9 +293,9 @@ void Mission::UpdateSate() {
 }
 
 
-void Mission::AssignNeighbours() {
+void Mission::AssignNeighbours() 
+{
     for (auto &agent: agents) {
-
         for (auto &neighbour: agents) {
             if (agent != neighbour) {
                 float distSq = (agent->GetPosition() - neighbour->GetPosition()).SquaredEuclideanNorm();
@@ -301,7 +307,8 @@ void Mission::AssignNeighbours() {
 }
 
 
-bool Mission::IsFinished() {
+bool Mission::IsFinished() 
+{
     bool result = true;
     for (auto &agent: agents) {
         bool localres = agent->isFinished();
@@ -316,7 +323,8 @@ bool Mission::IsFinished() {
     return result;
 }
 
-Mission &Mission::operator=(const Mission &obj) {
+Mission &Mission::operator=(const Mission &obj) 
+{
     if (this != &obj) {
         stepsCount = obj.stepsCount;
         stepsTreshhold = obj.stepsTreshhold;
@@ -326,9 +334,9 @@ Mission &Mission::operator=(const Mission &obj) {
         taskReader = obj.taskReader;
         missionResult = obj.missionResult;
         resultsLog = obj.resultsLog;
-#if MAPF_LOG
-        MAPFLog = obj.MAPFLog;
-#endif
+        #if MAPF_LOG
+            MAPFLog = obj.MAPFLog;
+        #endif
 
         vector<Agent *> tmpAgents = vector<Agent *>(obj.agents.size());
         for (int i = 0; i < obj.agents.size(); i++) {
@@ -356,14 +364,14 @@ Mission &Mission::operator=(const Mission &obj) {
         }
         taskReader = (obj.taskReader == nullptr) ? nullptr : obj.taskReader->Clone();
 
-#if FULL_LOG
-        if (taskLogger != nullptr) {
-            delete taskLogger;
-        }
-        taskLogger = (obj.taskLogger == nullptr) ? nullptr : obj.taskLogger->Clone();
-        stepsLog = obj.stepsLog;
-        goalsLog = obj.goalsLog;
-#endif
+        #if FULL_LOG
+            if (taskLogger != nullptr) {
+                delete taskLogger;
+            }
+            taskLogger = (obj.taskLogger == nullptr) ? nullptr : obj.taskLogger->Clone();
+            stepsLog = obj.stepsLog;
+            goalsLog = obj.goalsLog;
+        #endif
         commonSpeedsBuffer = obj.commonSpeedsBuffer;
         allStops = obj.allStops;
         stopByMeanSpeed = obj.stopByMeanSpeed;
@@ -371,9 +379,10 @@ Mission &Mission::operator=(const Mission &obj) {
     return *this;
 }
 
-// 可视化路径输出函数 (带坐标转换和长度补齐)
-void Mission::SavePathToTxt(std::string fileName) {
-#if FULL_LOG
+
+void Mission::SavePathToTxt(std::string fileName) 
+{
+    #if FULL_LOG
     std::ofstream outFile(fileName);
     if (!outFile.is_open()) {
         std::cout << "Error: Could not open file " << fileName << " for writing." << std::endl;
@@ -411,13 +420,14 @@ void Mission::SavePathToTxt(std::string fileName) {
 
     outFile.close();
     std::cout << "Paths saved to " << fileName << " (with padding and coord swap)." << std::endl;
-#else
-    std::cout << "Error: FULL_LOG is not enabled." << std::endl;
-#endif
+    #else
+        std::cout << "Error: FULL_LOG is not enabled." << std::endl;
+    #endif
 }
 
-// 地图文件输出函数
-void Mission::SaveMapToDotMap(std::string fileName) {
+
+void Mission::SaveMapToDotMap(std::string fileName) 
+{
     if (map == nullptr) {
         std::cout << "Error: Map is not initialized." << std::endl;
         return;
