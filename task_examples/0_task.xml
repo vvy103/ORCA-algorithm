@@ -624,6 +624,7 @@
             <vertex xr="32" yr="0"/>
         </obstacle>
     </obstacles>
+
     <map>
         <width>32</width>
         <height>32</height>
@@ -661,8 +662,9 @@
             <row>0 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0</row>
             <row>1 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0</row>
             <row>1 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</row>
-    </grid>
+        </grid>
     </map>
+
     <algorithm>
         <searchtype>thetastar</searchtype>
         <breakingties>0</breakingties>
@@ -674,4 +676,5 @@
         <trigger>speed-buffer</trigger>
         <mapfnum>3</mapfnum>
     </algorithm>
+    
 </root>

@@ -34,7 +34,6 @@ void orca_agent::ComputeNewVelocity()
 		Vector lRelativePosition = *left - position;
 		Vector rRelativePosition = *right - position;
 
-
 		bool alreadyCovered = false;
 
 		for (int j = 0; j < ORCALines.size(); j++) 

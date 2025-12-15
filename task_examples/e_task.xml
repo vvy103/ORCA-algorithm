@@ -13,6 +13,7 @@
         <agent id="8" start.xr="28.5" start.yr="63.5" goal.xr="28.5" goal.yr="58.5"/>
         <agent id="9" start.xr="34.5" start.yr="28.5" goal.xr="27.5" goal.yr="38.5"/>
     </agents>
+    
     <obstacles number="1">
         <obstacle>
             <vertex xr="0" yr="0"/>
@@ -21,6 +22,7 @@
             <vertex xr="64" yr="0"/>
         </obstacle>
     </obstacles>
+
     <map>
         <width>64</width>
         <height>64</height>

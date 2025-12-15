@@ -113,8 +113,6 @@ bool Mission::ReadTask()
 
 Summary Mission::StartMission() 
 {
-    SaveMapToDotMap("my_map.map");
-
     #if FULL_OUTPUT
         std::cout << "Start\n";
     #endif
@@ -188,7 +186,8 @@ Summary Mission::StartMission()
         collisionsCount += agent->GetCollision().first;
         collisionsObstCount += agent->GetCollision().second;
         auto tmpPARAgent = dynamic_cast<agent_pnr *> (agent);
-        if (tmpPARAgent != nullptr) {
+        if (tmpPARAgent != nullptr) 
+        {
             auto statMAPF = tmpPARAgent->GetMAPFStatistics();
             MAPFTime += statMAPF[CNS_MAPF_COMMON_TIME];
             initCount += static_cast<int>(statMAPF[CNS_MAPF_INIT_COUNT]);
@@ -198,9 +197,11 @@ Summary Mission::StartMission()
             unsuccessCount += static_cast<int>(statMAPF[CNS_MAPF_UNSUCCESS_COUNT]);
             flowtimeMAPF += static_cast<int>(statMAPF[CNS_MAPF_FLOWTIME]);
         }
-        else {
+        else 
+        {
             auto tmpPARnECBSAgent = dynamic_cast<ORCAAgentWithPARAndECBS *> (agent);
-            if (tmpPARnECBSAgent != nullptr) {
+            if (tmpPARnECBSAgent != nullptr) 
+            {
                 auto statMAPF = tmpPARnECBSAgent->GetMAPFStatistics();
                 MAPFTime += statMAPF[CNS_MAPF_COMMON_TIME];
                 initCount += static_cast<int>(statMAPF[CNS_MAPF_INIT_COUNT]);
@@ -234,8 +235,6 @@ Summary Mission::StartMission()
     missionResult[CNS_SUM_MAPF_SUCCESS_COUNT] = std::to_string(successCount);
     missionResult[CNS_SUM_MAPF_UNSUCCESS_COUNT] = std::to_string(unsuccessCount);
 
-    // 保存路径用于可视化
-    SavePathToTxt("paths.txt");
 
     #if FULL_OUTPUT
         std::cout << "End\n";
@@ -377,84 +376,4 @@ Mission &Mission::operator=(const Mission &obj)
         stopByMeanSpeed = obj.stopByMeanSpeed;
     }
     return *this;
-}
-
-
-void Mission::SavePathToTxt(std::string fileName) 
-{
-    #if FULL_LOG
-    std::ofstream outFile(fileName);
-    if (!outFile.is_open()) {
-        std::cout << "Error: Could not open file " << fileName << " for writing." << std::endl;
-        return;
-    }
-
-    // 计算最大路径长度 (Makespan) 用于补齐
-    size_t max_path_size = 0;
-    for (auto &entry : stepsLog) {
-        if (entry.second.size() > max_path_size) {
-            max_path_size = entry.second.size();
-        }
-    }
-
-    // 输出 Agent 路径
-    for (unsigned int i = 0; i < agentsNum; ++i) {
-        if (stepsLog.find(i) != stepsLog.end()) {
-            outFile << i << ":";
-            const auto& path = stepsLog[i];
-            
-            for (size_t t = 0; t < max_path_size; t++) {
-                // 如果当前时间步在路径范围内，取路径点；否则取最后一个点（补齐）
-                Point p = (t < path.size()) ? path[t] : path.back();
-                
-                // 将浮点 Point 转换为网格 Node (Row, Col)
-                Node n = map->GetClosestNode(p);
-                
-                // 关键修正：Visualizer 要求格式为 (x, y) 即 (Column, Row)
-                // n.j 是 Width (Column), n.i 是 Height (Row)
-                outFile << "(" << n.j << "," << n.i << "),";
-            }
-            outFile << "\n"; 
-        }
-    }
-
-    outFile.close();
-    std::cout << "Paths saved to " << fileName << " (with padding and coord swap)." << std::endl;
-    #else
-        std::cout << "Error: FULL_LOG is not enabled." << std::endl;
-    #endif
-}
-
-
-void Mission::SaveMapToDotMap(std::string fileName) 
-{
-    if (map == nullptr) {
-        std::cout << "Error: Map is not initialized." << std::endl;
-        return;
-    }
-
-    std::ofstream outFile(fileName);
-    if (!outFile.is_open()) {
-        std::cout << "Error: Could not open file " << fileName << " for writing." << std::endl;
-        return;
-    }
-
-    outFile << "type octile\n"; 
-    outFile << "height " << map->GetHeight() << "\n";
-    outFile << "width " << map->GetWidth() << "\n";
-    outFile << "map\n";
-
-    for (int i = 0; i < map->GetHeight(); ++i) {
-        for (int j = 0; j < map->GetWidth(); ++j) {
-            if (map->CellIsObstacle(i, j)) {
-                outFile << "@"; 
-            } else {
-                outFile << "."; 
-            }
-        }
-        outFile << "\n"; 
-    }
-
-    outFile.close();
-    std::cout << "Map saved to " << fileName << std::endl;
 }

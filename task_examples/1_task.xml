@@ -54,7 +54,6 @@
         <agent id="49" start.x="7" start.y="13" goal.x="59" goal.y="62" start.xr="7.5" start.yr="50.5" goal.xr="59.5" goal.yr="1.5"/>
     </agents>
 
-
     <obstacles number="3">
         <obstacle>
             <vertex xr="0" yr="0"/>
@@ -83,6 +82,7 @@
             <vertex xr="64" yr="0"/>
         </obstacle>
     </obstacles>
+
     <map>
         <width>64</width>
         <height>64</height>

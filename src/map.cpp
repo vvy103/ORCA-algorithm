@@ -1,6 +1,7 @@
 #include "map.h"
 
-Map::Map() {
+Map::Map() 
+{
 	cellSize = 1;
 	height = 0;
 	width = 0;
@@ -9,7 +10,8 @@ Map::Map() {
 }
 
 
-Map::Map(float cellSize, std::vector<std::vector<int>> &grid, std::vector<std::vector<Point>> &obstacles) {
+Map::Map(float cellSize, std::vector<std::vector<int>> &grid,  std::vector<std::vector<Point>> &obstacles) 
+{
 	this->cellSize = cellSize;
 	this->grid = new std::vector<std::vector<int>>(grid);
 	this->obstacles = new std::vector<std::vector<ObstacleSegment>>();
@@ -58,7 +60,8 @@ Map::Map(float cellSize, std::vector<std::vector<int>> &grid, std::vector<std::v
 }
 
 
-Map::Map(const Map &obj) {
+Map::Map(const Map &obj) 
+{
 	cellSize = obj.cellSize;
 	grid = (obj.grid == nullptr) ? nullptr : new std::vector<std::vector<int>>(*obj.grid);
 	obstacles = (obj.obstacles == nullptr) ? nullptr : new std::vector<std::vector<ObstacleSegment>>(*obj.obstacles);
@@ -67,7 +70,8 @@ Map::Map(const Map &obj) {
 }
 
 
-Map::~Map() {
+Map::~Map() 
+{
 	if (grid != nullptr) {
 		delete grid;
 		grid = nullptr;
@@ -80,37 +84,44 @@ Map::~Map() {
 }
 
 
-bool Map::CellIsObstacle(int i, int j) const {
+bool Map::CellIsObstacle(int i, int j) const 
+{
 	return ((*grid)[i][j] != CN_GC_NOOBS);
 }
 
 
-bool Map::CellIsTraversable(int i, int j) const {
+bool Map::CellIsTraversable(int i, int j) const 
+{
 	return ((*grid)[i][j] == CN_GC_NOOBS);
 }
 
 
-bool Map::CellOnGrid(int i, int j) const {
+bool Map::CellOnGrid(int i, int j) const 
+{
 	return (i < height && i >= 0 && j < width && j >= 0);
 }
 
 
-unsigned int Map::GetHeight() const {
+unsigned int Map::GetHeight() const 
+{
 	return height;
 }
 
 
-unsigned int Map::GetWidth() const {
+unsigned int Map::GetWidth() const 
+{
 	return width;
 }
 
 
-float Map::GetCellSize() const {
+float Map::GetCellSize() const 
+{
 	return cellSize;
 }
 
 
-Node Map::GetClosestNode(const Point &point) const {
+Node Map::GetClosestNode(const Point &point) const 
+{
 	Node res;
 	res.i = height - 1 - (int) (point.Y() / cellSize);
 	res.j = (int) (point.X() / cellSize);
@@ -132,15 +143,18 @@ Node Map::GetClosestNode(const Point &point) const {
 }
 
 
-Point Map::GetPoint(const Node &node) const {
+Point Map::GetPoint(const Node &node) const 
+{
 	return {(node.j * cellSize + cellSize / 2), (height - 1 - node.i) * cellSize + cellSize / 2};
 }
 
-const std::vector<std::vector<ObstacleSegment>> &Map::GetObstacles() const {
+const std::vector<std::vector<ObstacleSegment>> &Map::GetObstacles() const 
+{
 	return *obstacles;
 }
 
-Map &Map::operator=(const Map &obj) {
+Map &Map::operator=(const Map &obj) 
+{
 	if (this != &obj) {
 		cellSize = obj.cellSize;
 		height = obj.height;

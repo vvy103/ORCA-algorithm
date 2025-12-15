@@ -109,7 +109,8 @@ class Line
 };
 
 
-class Vertex : public Point {
+class Vertex : public Point 
+{
 	public:
 		Vertex() : Point() {}
 
@@ -132,14 +133,15 @@ class Vertex : public Point {
 };
 
 
-class ObstacleSegment {
+class ObstacleSegment 
+{
 	public:
 		ObstacleSegment() = default;
 
-		ObstacleSegment(const ObstacleSegment &obj) : left(obj.left), right(obj.right), id(obj.id), next(obj.next),
-													  prev(obj.prev), dir(obj.dir) {}
+		ObstacleSegment(const ObstacleSegment &obj) : left(obj.left), right(obj.right), id(obj.id), next(obj.next), prev(obj.prev), dir(obj.dir) {}
 
-		ObstacleSegment(int id, const Vertex &left, const Vertex &right) : left(left), right(right), id(id) {
+		ObstacleSegment(int id, const Vertex &left, const Vertex &right) : left(left), right(right), id(id) 
+		{
 			dir = right - left;
 			dir = dir / dir.EuclideanNorm();
 		}

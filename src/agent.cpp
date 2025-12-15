@@ -152,12 +152,13 @@ void Agent::UpdateNeighbourObst()
 	std::vector<std::vector<ObstacleSegment>> tmpObstacles = map->GetObstacles();
 	float distSq = 0;
 
-	for (int i = 0; i < tmpObstacles.size(); i++) {
-		for (int j = 0; j < tmpObstacles[i].size(); j++) {
-
-			distSq = Utils::SqPointSegDistance(static_cast<Point>(tmpObstacles[i][j].left),
-											   static_cast<Point>(tmpObstacles[i][j].right), position);
-			if (distSq < maxSqObstDist) {
+	for (int i = 0; i < tmpObstacles.size(); i++) 
+	{
+		for (int j = 0; j < tmpObstacles[i].size(); j++) 
+		{
+			distSq = Utils::SqPointSegDistance(static_cast<Point>(tmpObstacles[i][j].left), static_cast<Point>(tmpObstacles[i][j].right), position);
+			if (distSq < maxSqObstDist) 
+			{
 				NeighboursObst.push_back({distSq, tmpObstacles[i][j]});
 			}
 		}
