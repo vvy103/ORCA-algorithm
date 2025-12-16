@@ -1,8 +1,9 @@
 #include "agent_pnr_ecbs.h"
 
 
-ORCAAgentWithPARAndECBS::ORCAAgentWithPARAndECBS() : Agent() {
-//    srand (42);
+ORCAAgentWithPARAndECBS::ORCAAgentWithPARAndECBS() : Agent() 
+{
+	//srand (42);
 	fakeRadius = 0;
 	MAPFAgents = std::set<ORCAAgentWithPARAndECBS *>();
 	inMAPFMode = false;
@@ -52,14 +53,9 @@ ORCAAgentWithPARAndECBS::ORCAAgentWithPARAndECBS() : Agent() {
 }
 
 
-ORCAAgentWithPARAndECBS::ORCAAgentWithPARAndECBS(const int &id, const Point &start, const Point &goal, const Map &map,
-												 const environment_options &options, AgentParam param) : Agent(id,
-																											   start,
-																											   goal,
-																											   map,
-																											   options,
-																											   param) {
-//    srand (42);
+ORCAAgentWithPARAndECBS::ORCAAgentWithPARAndECBS(const int &id, const Point &start, const Point &goal, const Map &map, const environment_options &options, AgentParam param) : Agent(id, start, goal, map, options, param) 
+{
+	//srand (42);
 	fakeRadius = param.rEps + param.radius;
 	MAPFAgents = std::set<ORCAAgentWithPARAndECBS *>();
 	inMAPFMode = false;
