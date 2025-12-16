@@ -6,7 +6,7 @@
 
 #include "mission.h"
 
-#define STEP_MAX            1000
+#define STEP_MAX            10000
 #define IS_TIME_BOUNDED     false
 #define STOP_BY_SPEED       true
 #define TIME_MAX            1000 * 60 * 1
